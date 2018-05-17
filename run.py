@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""
+github: my-bug
+blog: my-bug.github.io
+"""
 import img, config, re, time
 
 url = config.URL
@@ -22,6 +26,7 @@ while True:
 	time.sleep(1)
 	if page == b:
 		break
+
 	page = page +1
 
 print(str(a) + "条")
