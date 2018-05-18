@@ -2,21 +2,21 @@
 
 import requests, re
 
-def status(url):
+def status(url, proxies):
 	header = {
-	'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:59.0) Gecko/20100101 Firefox/59.0'
+	'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36'
 	}
-	status = requests.get(url, header)
+	status = requests.get(url, header, proxies=proxies)
 	if status.status_code == 200:
 		web_enco = re.findall('charset=(.*)"', status.text, re.I)
 		status.encoding = web_enco[0]
 		return status.text
 	return False
 
-def total(url):
-	if status(url):
+def total(url, proxies):
+	if status(url, proxies):
 		total = re.compile('<li>.*</span></li>')
-		total = total.findall(status(url))
+		total = total.findall(status(url, proxies))
 		return total
 	else:
 		return False
