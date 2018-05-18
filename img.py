@@ -4,7 +4,8 @@ import requests, re
 
 def status(url, proxies):
 	header = {
-	'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36'
+	'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36',
+	'Referer': 'http://www.mzitu.com/'
 	}
 	status = requests.get(url, header, proxies=proxies)
 	if status.status_code == 200:
@@ -55,7 +56,7 @@ def img_url(name, character):
 	return False
 
 def page(character):
-	k = re.compile(r"…</span><a href='https*://www\.[a-z]*\.com/[0-9]*/[0-9]{2}'><span>[0-9]{2,3}</span></a>")
+	k = re.compile(r"https*://www\.[a-z]*\.com/[0-9]*/[0-9]{2}'><span>[0-9]{2,3}</span></a>")
 	pag = k.findall(character)
 	page = re.findall('<span>(.*)</span>', pag[0], re.I)
 	if len(page):

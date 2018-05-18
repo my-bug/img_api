@@ -21,12 +21,17 @@ while True:
 	proxies = ip.get_random_ip(ip_list)
 	print(proxies)
 	"""
-	proxies = {'https': 'http://118.123.113.4:80/',
+	proxies = {
+			   'https': 'http://120.52.32.46:80',
+			   'https': 'http://118.123.113.4:80/',
 			   'https': 'http://222.168.41.246:8090',
 			  }
-    # 合成网址
-	urls = '{}{}/page/{}'.format(url, config.TYPE['最热'], page)
+	# 合成网址
+	#urls = '{}{}/page/{}'.format(url, config.TYPE['最热'], page)
+	urls = '{}{}'.format(url, config.TYPE['最热'])
+	print(urls)
 	for i in img.total(url, proxies):
+		print(i)
 		# 地址
 		imge_url = img.url(i)[0]
 		# 名字
@@ -63,6 +68,7 @@ while True:
 				break
 			pages = pages + 1
 			time.sleep(0.2)
+		print()
 		print(name, "共", pages, "张")
 
 		a = a + 1
@@ -70,7 +76,8 @@ while True:
 	time.sleep(1)
 	if page == b:
 		break
-
+	print()
+	print(page, "页")
 	page = page +1
 
-print(str(a) + "条")
+print(a, "条")
