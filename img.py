@@ -22,7 +22,7 @@ def total(url):
 		return False
 
 def url(character):
-	re_url = re.compile(r'http://www\.[a-z]*\.com/[0-9]+')
+	re_url = re.compile(r'https*://www\.[a-z]*\.com/[0-9]+')
 	url = re_url.findall(character)
 	if len(url):
 		return url
@@ -45,4 +45,19 @@ def preview(character):
 	preview = re.findall("data-original='(.*)' /></a>", character, re.I)
 	if len(preview):
 		return preview
+	return False
+
+def img_url(name, character):
+	img_text = '<img src="(.*)" alt="{}" />'.format(name)
+	img_url = re.findall(img_text, character, re.I)
+	if len(img_url):
+		return img_url
+	return False
+
+def page(character):
+	k = re.compile(r"…</span><a href='https*://www\.[a-z]*\.com/[0-9]*/[0-9]{2}'><span>[0-9]{2,3}</span></a>")
+	pag = k.findall(character)
+	page = re.findall('<span>(.*)</span>', pag[0], re.I)
+	if len(page):
+		return page
 	return False
