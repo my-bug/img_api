@@ -22,7 +22,7 @@ def get_random_ip(ip_list):
     for ip in ip_list:
         proxy_list.append('http://' + ip)
     proxy_ip = random.choice(proxy_list)
-    proxies = {'http': proxy_ip}
+    proxies = {'https': proxy_ip}
     return proxies
 
 """
