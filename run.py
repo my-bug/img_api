@@ -44,8 +44,8 @@ while True:
 		# 预览图片地址
 		preview = img.preview(i)[0]
 		# 获取页数
-		u = img.status(imge_url, proxies)
-		paged = img.page(u)
+		#u = img.status(imge_url, proxies)
+		#paged = img.page(u)
 
 		print()
 		print("名称：", name)
@@ -63,15 +63,19 @@ while True:
 		while True:
 			# 每页网址
 			page_url = '{}/{}'.format(imge_url, pages)
-			imge_urls = img.img_url(name, img.status(page_url, proxies))
-			#print(imge_urls[0])
-			# 保存图片
-			se = '{}/{}/{}.jpg'.format(config.DOW, name, pages)
-			# 把链接储存到列表
-			save_url.append(imge_urls[0])
-			print(imge_urls[0]) # 保存图片删除注释 , round(save_img.save_img(imge_urls[0], se)/1024, 2), "K")
+			pan = img.status(page_url, proxies)
+			if pan:
+				imge_urls = img.img_url(name, img.status(page_url, proxies))
+				#print(imge_urls[0])
+				# 保存图片
+				se = '{}/{}/{}.jpg'.format(config.DOW, name, pages)
+				# 把链接储存到列表
+				save_url.append(imge_urls[0])
+				print(imge_urls[0]) # 保存图片删除注释 , round(save_img.save_img(imge_urls[0], se)/1024, 2), "K")
+				pages = pages + 1
+				time.sleep(0.2)
 
-			if pages == int(paged[0]):
+			else:
 				# 保存为字典
 				save_total = save_json.Save_json(config.SAVE_FILE, times, imge_url, preview, save_url)
 				total[name] = save_total.img_key()
@@ -81,8 +85,8 @@ while True:
 				#print("保存状态", save_image.save_image())
 				break
 
-			pages = pages + 1
-			time.sleep(0.2)
+			#pages = pages + 1
+			#time.sleep(0.2)
 
 		print()
 		print(name, "共", pages, "张")
