@@ -1,6 +1,7 @@
 URL = "http://www.mzitu.com/"
 IP_URL = 'http://www.xicidaili.com/nn/'
 DOW = 'image/'
+SAVE_FILE = 'json/data.json'
 # 代理ip
 proxies = {
 			'https': '120.52.32.46:80',
