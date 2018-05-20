@@ -17,7 +17,7 @@ def save_img(url, name):
 	}
 	a = 0
 	for i in url:
-		ir = requests.get(i, headers = headers, proxies=config.proxies)
+		ir = requests.get(i, headers = headers) # 代理 , proxies=config.proxies)
 		# 保存文件路径
 		file = '{}{}/{}.jpg'.format(config.DOW, name, a)
 		sz = open(file, 'wb').write(ir.content)

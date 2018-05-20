@@ -13,7 +13,7 @@ url = config.URL
 #计数器
 a = 0
 # 页数
-b = 4
+b = 180
 
 page = 1
 total = {}
@@ -30,7 +30,9 @@ while True:
 			  }
 	"""
 	# 合成网址
-	urls = '{}{}/page/{}'.format(url, config.TYPE['最热'], page)
+	#urls = '{}{}/page/{}'.format(url, config.TYPE['最热'], page)
+	# 首页
+	urls = '{}/page/{}'.format(url, page)
 	print(urls)
 	for i in img.total(urls, proxies):
 		# 地址
