@@ -17,7 +17,7 @@ def save_img(url, name):
 	}
 	a = 0
 	for i in url:
-		ir = requests.get(i, headers = headers) # 代理 , proxies=config.proxies)
+		ir = requests.get(i, headers = headers, proxies=config.proxies)
 		# 保存文件路径
 		file = '{}{}/{}.jpg'.format(config.DOW, name, a)
 		sz = open(file, 'wb').write(ir.content)
@@ -39,16 +39,16 @@ def xian_start():
 # 创建线程池
 threadpool = []
 # 最大线程数
-xian_max = 24
+xian_max = 30
 
-json_file = 'json/d.json'
+json_file = 'json/back.json'
 with open(json_file,'r') as load_f:
 	load_dict = json.load(load_f)
 	for i in load_dict.keys():
 		# 创建图片名字目录
 		os.makedirs(config.DOW + i)
 		# 定义线程
-		th = threading.Thread(target=save_img, args=(load_dict[i]['urls'], i))
+		th = threading.Thread(target=save_img, args=(load_dict[i]['urls'], i,))
 		# 将线程加入线程池
 		threadpool.append(th)
 		if len(threadpool) == xian_max:
@@ -58,22 +58,3 @@ with open(json_file,'r') as load_f:
 	if len(threadpool) <= xian_max:
 		xian_start()
 		threadpool = []
-
-"""
-print(len(threadpool))	
-# 开始线程
-xian = 0
-for th in threadpool:
-	th.start()
-	xian = xian + 1
-	if xian == 15:
-		xian = 0
-		# 等待所有线程运行完毕
-		for th in threadpool:
-			th.join()
-"""
-"""	
-# 等待所有线程运行完毕
-for th in threadpool:
-    th.join()
-"""

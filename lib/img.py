@@ -48,9 +48,9 @@ def preview(character):
 		return preview
 	return False
 
-def img_url(name, character):
-	img_text = '<img src="(.*)" alt="{}" />'.format(name)
-	img_url = re.findall(img_text, character, re.I)
+def img_url(character):
+	#img_text = '<img src="(.*)" alt="{}" />'.format(name)
+	img_url = re.findall('<img src="(.*)" alt=".*?" />', character, re.I)
 	if len(img_url):
 		return img_url
 	return False
@@ -58,7 +58,8 @@ def img_url(name, character):
 def page(character):
 	k = re.compile(r"https*://www\.[a-z]*\.com/[0-9]*/[0-9]{2}'><span>[0-9]{2,3}</span></a>")
 	pag = k.findall(character)
-	page = re.findall('<span>(.*)</span>', pag[0], re.I)
-	if len(page):
-		return page
+	if len(pag):
+		page = re.findall('<span>(.*)</span>', pag[0], re.I)
+		if len(page):
+			return page
 	return False

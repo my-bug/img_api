@@ -5,35 +5,19 @@
 github: my-bug
 blog: my-bug.github.io
 """
-from lib import img, ip
+from lib import img
 import config, save_json, save_img
-import re, time, os
+import re, time, os, threading
 
-url = config.URL
-#计数器
-a = 0
-# 页数
-b = 180
-
-page = 1
-total = {}
-while True:
+def start(urls):
+	#global total
+	#total = {}
 	# 获取代理ip
-	ip_list = ip.get_ip_list(config.IP_URL)
-	proxies = ip.get_random_ip(ip_list)
-	print(proxies)
-	"""
-	proxies = {
-			   'https': 'http://120.52.32.46:80',
-			   'https': 'http://118.123.113.4:80/',
-			   'https': 'http://222.168.41.246:8090',
-			  }
-	"""
-	# 合成网址
-	#urls = '{}{}/page/{}'.format(url, config.TYPE['最热'], page)
-	# 首页
-	urls = '{}/page/{}'.format(url, page)
-	print(urls)
+	#ip_list = ip.get_ip_list(config.IP_URL)
+	#proxies = ip.get_random_ip(ip_list)
+	print()
+	proxies = config.proxies
+	print("代理IP:", proxies['https'])
 	for i in img.total(urls, proxies):
 		# 地址
 		imge_url = img.url(i)[0]
@@ -44,62 +28,90 @@ while True:
 		# 预览图片地址
 		preview = img.preview(i)[0]
 		# 获取页数
-		#u = img.status(imge_url, proxies)
-		#paged = img.page(u)
-
+		u = img.status(imge_url, proxies)
+		paged = img.page(u)
 		print()
 		print("名称：", name)
 		print("时间：", times)
 		print("地址：", imge_url)
 		print("预览：", preview)
 		print("以下是图片地址")
-		# 创建图片文件夹
-		# 保存到本地就删除注释，以及65行
-		# os.makedirs(config.DOW + name)
-
-		# 合成每页网
-		pages = 1
-		save_url = []
-		while True:
-			# 每页网址
-			page_url = '{}/{}'.format(imge_url, pages)
-			pan = img.status(page_url, proxies)
-			if pan:
-				imge_urls = img.img_url(name, img.status(page_url, proxies))
-				#print(imge_urls[0])
-				# 保存图片
-				se = '{}/{}/{}.jpg'.format(config.DOW, name, pages)
-				# 把链接储存到列表
-				save_url.append(imge_urls[0])
-				print(imge_urls[0]) # 保存图片删除注释 , round(save_img.save_img(imge_urls[0], se)/1024, 2), "K")
-				pages = pages + 1
+		# 如果有页数，那么获取每页图片
+		if paged:
+			# 图片每页地址
+			inde_pages = 1
+			# 创建一个列表存放图片url
+			save_url = []
+			# 输出所有地址
+			for img_url in range(1, int(paged[0]) + 1):
+				# 每页网址
+				page_url = '{}/{}'.format(imge_url, img_url)
+				# 获取图片链接
+				imge_urls = img.img_url(img.status(page_url, proxies))
+				if imge_urls:
+					if len(imge_urls):
+						# 把链接储存到列表
+						save_url.append(imge_urls[0])	
+						print(imge_urls[0])
+					else:
+						imge_urls = ['False']
+						save_url.append(imge_urls[0])
+				else:
+					imge_urls = ['False']
+					save_url.append(imge_urls[0])
 				time.sleep(0.2)
+		else: 
+			save_url = img.img_url(img.status(imge_url, proxies))
+			for n in save_url:
+				print(n)
 
-			else:
-				# 保存为字典
-				save_total = save_json.Save_json(config.SAVE_FILE, times, imge_url, preview, save_url)
-				total[name] = save_total.img_key()
-				#print (total)
-				# 保存为json
-				#save_image = save_json.Save_json(config.SAVE_FILE, name, times, imge_url, preview, save_url)
-				#print("保存状态", save_image.save_image())
-				break
+			paged = [len(save_url)]
+			time.sleep(0.2)
+		# 保存为字典
+		save_total = save_json.Save_json(config.SAVE_FILE, times, imge_url, preview, save_url)
+		# 储存在total字典中
+		total[name] = save_total.img_key()
+		print(name, "共", paged[0], "张")
 
-			#pages = pages + 1
-			#time.sleep(0.2)
+	# 锁线程
+	#lock.acquire()
+	save_image = save_json.Save_json(config.SAVE_FILE, times, imge_url, preview, save_url)
+	print("保存状态", save_image.save_image(total))
+	# 解锁线程
+	#lock.release()
 
-		print()
-		print(name, "共", pages, "张")
-		#exit()
 
-		a = a + 1
+# 获取url
+url = config.URL
+# 创建一个计数器，储存条数
+#article = 0
+# 爬取页数
+pages = 50
+# 开始页数
+#page = 1
+# 储存json数据的字典
+total = {}
+# 合成网址
+#urls = '{}{}/page/{}'.format(url, config.TYPE['最热'], page)
+#start(urls)
 
-	time.sleep(1)
-	if page == b:
-		break
-	print()
-	print(page, "页")
-	page = page +1
+# 创建线程池
+threadpool = []
+# 创建锁
+lock = threading.Lock()
+# 最大线程数
+xian_max = 24
+for m in range(1, pages + 1):
+	# 首页
+	urls = '{}page/{}'.format(url, 40)
+	th = threading.Thread(target=start, args=(urls,))
+	# 将线程加入线程池
+	threadpool.append(th)
 
-print(save_total.save_image(total))
-print(a, "条")
+for th in threadpool:
+	th.setDaemon(True)
+	th.start()
+for n in threadpool:
+	th.join()
+	#print(total)
+#print("保存状态", save_image.save_image(total))

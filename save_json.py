@@ -24,6 +24,6 @@ class Save_json():
 
 
 	def save_image(self, total):
-		with open(self.save_file, 'w') as f:
+		with open(self.save_file, 'a') as f:
 			json.dump(total, f, ensure_ascii=False)
 			return True

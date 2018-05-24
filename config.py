@@ -4,9 +4,9 @@ DOW = 'image/'
 SAVE_FILE = 'json/data.json'
 # 代理ip
 proxies = {
-			'https': '120.52.32.46:80',
-			'https': 'http://118.123.113.4:80/',
-		    'https': 'http://222.168.41.246:8090',
+			'https': 'http://120.52.32.46:80',
+			'https': 'http://118.123.113.4:80',
+		    'https': 'http://218.85.133.62:80',
 		  }
 
 TYPE = {
